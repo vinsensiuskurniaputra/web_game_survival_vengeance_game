@@ -3,7 +3,7 @@ import { Nunito, Fredoka } from 'next/font/google';
 import Link from 'next/link';
 import { FaLeaf, FaPaw, FaGamepad, FaUsers, FaTree, FaScroll, FaMagic, FaMap, FaEye, FaFeatherAlt } from 'react-icons/fa';
 import { GiWoodenSign, GiForest, GiHerbsBundle, GiBearFace, GiStoneAxe, GiTreeDoor, GiRiver, GiCaveEntrance, GiSpiralBottle, GiAncientSword, GiWolfHowl } from 'react-icons/gi';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const nunito = Nunito({
     subsets: ['latin'],
@@ -29,6 +29,7 @@ export default function Home() {
     const bgRef = useRef<HTMLDivElement>(null);
     const midRef = useRef<HTMLDivElement>(null);
     const fgRef = useRef<HTMLDivElement>(null);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -40,6 +41,28 @@ export default function Home() {
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Split menu items into two rows
+    const menuItems = [
+        { href: '#hero', label: 'Home' },
+        { href: '#team', label: 'Team' },
+        { href: '#title', label: 'Judul' },
+        { href: '#specs', label: 'Specs' },
+        { href: '#sinopsis', label: 'Sinopsis' },
+        { href: '#features', label: 'Features' },
+        { href: '#tech-spec', label: 'Tech Specs' },
+        { href: '#story', label: 'Cerita' },
+        { href: '#game-play', label: 'Gameplay' },
+        { href: '#win-lose-condition', label: 'Win Lose Condition' },
+        { href: '#player-control', label: 'Player Control' },
+        { href: '#key-feature', label: 'Key Feature' },
+        { href: '#levels', label: 'Levels Design' },
+        { href: '#ai', label: 'AI' },
+        { href: '#art', label: 'Art/UI' },
+    ];
+    const firstRowCount = 10;
+    const firstRow = menuItems.slice(0, firstRowCount);
+    const restRows = menuItems.slice(firstRowCount, menuItems.length);
 
     return (
         <div className={`bg-[#B1ECEA] min-h-screen text-[#09394A] font-sans overflow-x-hidden ${nunito.className} ${fredoka.className}`}>
@@ -54,22 +77,43 @@ export default function Home() {
             </div>
 
             {/* Sticky Navbar */}
-            <nav className='fixed mx-auto top-0 left-0 right-0 w-fit z-30 bg-white backdrop-blur-md py-4 px-6 flex items-center justify-between border-b border-[#09394A]/10 shadow-lg rounded-b-3xl'>
-                <div className='flex gap-4 text-base'>
-                    {[
-                        { href: '#hero', label: 'Home' },
-                        { href: '#team', label: 'Team' },
-                        { href: '#specs', label: 'Specs' },
-                        { href: '#features', label: 'Features' },
-                        { href: '#story', label: 'Story' },
-                        { href: '#levels', label: 'Levels' },
-                        { href: '#ai', label: 'AI' },
-                        { href: '#art', label: 'Art/UI' },
-                    ].map((item, i) => (
-                        <a key={i} href={item.href} className='rounded-full px-4 py-2 bg-white/70 text-[#09394A] font-bold shadow-md border border-[#09394A]/20 hover:bg-[#e3f6fd] hover:text-[#09394A] transition-all focus:outline-[#09394A]/80 focus:ring-2 focus:ring-[#09394A]/30'>
+            <nav className='fixed mx-auto top-0 left-0 right-0 w-full max-w-[1000px] z-30 bg-white backdrop-blur-md py-4 px-6 flex items-center justify-between border-b border-[#09394A]/10 shadow-lg rounded-b-3xl group' onMouseEnter={() => setMenuOpen(true)} onMouseLeave={() => setMenuOpen(false)} onFocus={() => setMenuOpen(true)} onBlur={() => setMenuOpen(false)} tabIndex={0}>
+                {/* Hamburger for mobile */}
+                <button className='md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-full border border-[#09394A]/20 bg-white/80 shadow-md mr-2' aria-label='Open menu' onClick={() => setMenuOpen((v) => !v)}>
+                    <span className='block w-6 h-0.5 bg-[#09394A] mb-1 rounded'></span>
+                    <span className='block w-6 h-0.5 bg-[#09394A] mb-1 rounded'></span>
+                    <span className='block w-6 h-0.5 bg-[#09394A] rounded'></span>
+                </button>
+                {/* Menu items */}
+                <div
+                    className={`
+                        flex flex-wrap gap-4 text-base justify-center
+                        transition-all
+                        ${menuOpen ? 'max-h-[1000px] opacity-100' : 'max-h-[56px] opacity-100'}
+                        md:max-h-none md:opacity-100
+                        overflow-hidden md:flex
+                        absolute md:static top-full left-0 w-full md:w-auto bg-white md:bg-transparent rounded-b-3xl md:rounded-none shadow-lg md:shadow-none border-t md:border-0 border-[#09394A]/10 md:border-none
+                        z-40
+                        group-hover:max-h-[1000px] group-hover:opacity-100
+                        group-focus-within:max-h-[1000px] group-focus-within:opacity-100
+                        navbar-menu
+                    `}
+                    style={{ transition: 'max-height 0.3s, opacity 0.2s' }}
+                >
+                    {/* First row: always visible */}
+                    {firstRow.map((item, i) => (
+                        <a key={i} href={item.href} className='rounded-full px-4 py-2 bg-white/70 text-[#09394A] font-bold shadow-md border border-[#09394A]/20 hover:bg-[#e3f6fd] hover:text-[#09394A] transition-all focus:outline-[#09394A]/80 focus:ring-2 focus:ring-[#09394A]/30' tabIndex={0} onClick={() => setMenuOpen(false)}>
                             {item.label}
                         </a>
                     ))}
+                    {/* Rest rows: hidden unless hovered/focused */}
+                    <div className={`flex flex-wrap gap-4 w-full md:w-auto  ${menuOpen ? 'navbar-row2-open' : ''}`}>
+                        {restRows.map((item, i) => (
+                            <a key={i + firstRowCount} href={item.href} className='rounded-full px-4 py-2 bg-white/70 text-[#09394A] font-bold shadow-md border border-[#09394A]/20 hover:bg-[#e3f6fd] hover:text-[#09394A] transition-all focus:outline-[#09394A]/80 focus:ring-2 focus:ring-[#09394A]/30' tabIndex={0} onClick={() => setMenuOpen(false)}>
+                                {item.label}
+                            </a>
+                        ))}
+                    </div>
                 </div>
             </nav>
 
@@ -137,7 +181,7 @@ export default function Home() {
             </section>
 
             {/* Judul dan Makna */}
-            <section id='judul-dan-makna' className='py-24 px-4 flex items-center justify-center relative'>
+            <section id='title' className='py-24 px-4 flex items-center justify-center relative'>
                 <div className='max-w-3xl w-full mx-auto bg-gradient-to-br from-[#f6fbe9]/80 to-[#e3f6fd]/90 rounded-2xl shadow-2xl border-2 border-green-200 p-10 relative prose prose-invert text-lg text-center font-nunito text-[#09394A] animate-fade-in-up backdrop-blur-xl'>
                     <h2 className='text-4xl md:text-5xl font-extrabold mb-4 text-[#09394A] font-fredoka uppercase'>Judul & Makna</h2>
                     <p>Judul "Survival Vengeance" dipilih karena menggambarkan inti dari permainan, yaitu perjuangan karakter utama, Axel Pace, untuk bertahan hidup (Survival) sambil menuntut balas (Vengeance) atas eksperimen misterius yang mengubah manusia menjadi monster. Kata "Survival" mencerminkan mode utama permainan di mana pemain harus terus hidup melawan gelombang musuh. Sementara itu, "Vengeance" menunjukkan motivasi emosional dari karakter utama yang berusaha mengungkap dan membalas penderitaan yang ia alami akibat eksperimen tersebut. Judul ini menggambarkan nuansa aksi dan ketegangan yang mendalam dalam perjalanan sang karakter di dunia yang kacau.</p>
@@ -179,7 +223,7 @@ export default function Home() {
             </section>
 
             {/* Game Synopsis */}
-            <section id='synopsis' className='py-24 px-4 flex items-center justify-center bg-[#09394A] relative'>
+            <section id='sinopsis' className='py-24 px-4 flex items-center justify-center bg-[#09394A] relative'>
                 <div className='max-w-3xl w-full mx-auto bg-gradient-to-br from-[#f6fbe9]/80 to-[#e3f6fd]/90 rounded-2xl shadow-2xl border-2 border-green-200 p-10 relative prose prose-invert text-lg text-center font-nunito text-[#09394A] animate-fade-in-up backdrop-blur-xl'>
                     <span className='absolute -top-8 left-1/2 -translate-x-1/2 text-5xl text-yellow-400 drop-shadow-lg'>📜</span>
                     <h2 className='text-4xl md:text-5xl font-extrabold mb-4 text-[#09394A] font-fredoka uppercase'>Sinopsis</h2>
@@ -191,6 +235,31 @@ export default function Home() {
             <section id='features' className='py-24 px-4 bg-[#f6fbe9] relative'>
                 <div className='max-w-6xl mx-auto animate-fade-in-up'>
                     <h2 className='text-5xl font-extrabold mb-12 text-center text-[#09394A] flex items-center justify-center gap-2 font-fredoka uppercase drop-shadow-lg'>Gameplay Features</h2>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+                        <div className='bg-gradient-to-br from-[#e3f6fd]/80 to-[#b7e4c7]/90 p-8 rounded-2xl shadow-xl border border-green-200 backdrop-blur-md'>
+                            <h3 className='text-xl font-semibold mb-4 flex items-center gap-2 text-[#09394A] font-fredoka'>Bertahan Hidup dari Serangan Gelombang Musuh</h3>
+                            <p className='space-y-2 text-[#09394A] font-light'>Pemain harus menghadapi gelombang demi gelombang musuh yang semakin kuat dan banyak. Tantangan yang terus meningkat memberikan sensasi tegang dan memacu adrenalin.</p>
+                        </div>
+                        <div className='bg-gradient-to-br from-[#e3f6fd]/80 to-[#b7e4c7]/90 p-8 rounded-2xl shadow-xl border border-green-200 backdrop-blur-md'>
+                            <h3 className='text-xl font-semibold mb-4 flex items-center gap-2 text-[#09394A] font-fredoka'>Mengumpulkan Power-Up</h3>
+                            <p className='space-y-2 text-[#09394A] font-light'>etiap musuh yang dikalahkan berpotensi menjatuhkan power-up. Pemain harus memilih dan memanfaatkan item dengan bijak untuk bertahan lebih lama.</p>
+                        </div>
+                        <div className='bg-gradient-to-br from-[#e3f6fd]/80 to-[#b7e4c7]/90 p-8 rounded-2xl shadow-xl border border-green-200 backdrop-blur-md'>
+                            <h3 className='text-xl font-semibold mb-4 flex items-center gap-2 text-[#09394A] font-fredoka'>Upgrade Karakter Secara Progresif</h3>
+                            <p className='space-y-2 text-[#09394A] font-light'>Pemain bisa meningkatkan statistik karakter seperti damage, kecepatan, pertahanan, dan jangkauan serangan melalui EXP yang didapat. Progres karakter yang terasa membuat pemain merasa semakin kuat.</p>
+                        </div>
+                        <div className='bg-gradient-to-br from-[#e3f6fd]/80 to-[#b7e4c7]/90 p-8 rounded-2xl shadow-xl border border-green-200 backdrop-blur-md'>
+                            <h3 className='text-xl font-semibold mb-4 flex items-center gap-2 text-[#09394A] font-fredoka'>Membuat Strategi Build yang Efektif</h3>
+                            <p className='space-y-2 text-[#09394A] font-light'>Pemain diajak berpikir cepat dan merancang strategi build dari senjata dan skill yang tersedia secara acak. Setiap keputusan memengaruhi peluang bertahan hidup.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* TECHNICAL SPEC */}
+            <section id='tech-spec' className='py-24 px-4 bg-[#f6fbe9] relative'>
+                <div className='max-w-6xl mx-auto animate-fade-in-up'>
+                    <h2 className='text-5xl font-extrabold mb-12 text-center text-[#09394A] flex items-center justify-center gap-2 font-fredoka uppercase drop-shadow-lg'>Technical Spec</h2>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
                         <div className='bg-gradient-to-br from-[#e3f6fd]/80 to-[#b7e4c7]/90 p-8 rounded-2xl shadow-xl border border-green-200 backdrop-blur-md'>
                             <h3 className='text-xl font-semibold mb-4 flex items-center gap-2 text-[#09394A] font-fredoka'>Bertahan Hidup dari Serangan Gelombang Musuh</h3>
@@ -351,6 +420,51 @@ export default function Home() {
                 nav a:focus:after {
                     width: 60%;
                     left: 20%;
+                }
+                /* Responsive navbar always visible, menu expands on hover/focus or mobile open */
+                @media (max-width: 768px) {
+                    nav {
+                        width: 100% !important;
+                        max-width: 100vw !important;
+                        left: 0 !important;
+                        right: 0 !important;
+                        border-radius: 0 0 2rem 2rem;
+                    }
+                    nav > div {
+                        position: absolute !important;
+                        top: 100%;
+                        left: 0;
+                        width: 100vw;
+                        background: white;
+                        border-radius: 0 0 2rem 2rem;
+                        box-shadow: 0 8px 32px #09394a22;
+                        z-index: 40;
+                    }
+                }
+                /* Navbar row2 hidden by default, shown on hover/focus or mobile open */
+                .navbar-row2 {
+                    display: none;
+                    width: 100%;
+                }
+                nav:hover .navbar-row2,
+                nav:focus-within .navbar-row2,
+                .navbar-row2.navbar-row2-open {
+                    display: flex;
+                }
+                @media (max-width: 768px) {
+                    .navbar-row2 {
+                        display: flex;
+                    }
+                }
+                /* Limit menu height when not open (desktop only) */
+                @media (min-width: 769px) {
+                    .navbar-menu {
+                        max-height: 56px;
+                    }
+                    .group:hover .navbar-menu,
+                    .group:focus-within .navbar-menu {
+                        max-height: 1000px;
+                    }
                 }
             `}</style>
         </div>
