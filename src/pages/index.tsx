@@ -164,7 +164,7 @@ export default function Home() {
 
             {/* Footer */}
             <footer className='py-8 px-4 bg-gradient-to-b from-[#2a1a2a]/90 to-[#18141c]/95 text-center border-t border-[#bfa14a]/30 font-medieval text-[#bfa14a] tracking-widest'>
-                <p>© 2024 Forest of Vengeance. All rights reserved.</p>
+                <p>© 2025 Survival of Vengeance. All rights reserved.</p>
             </footer>
 
             {/* Custom styles for animation and glassmorphism */}
