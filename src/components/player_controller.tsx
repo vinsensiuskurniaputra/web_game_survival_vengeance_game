@@ -62,6 +62,15 @@ export default function PlayerControl() {
                             </li>
                         </ul>
                     </div>
+                    {/* Mouse Controls */}
+                    <div className='flex flex-col items-center'>
+                        <div className='flex gap-2 mb-2'>
+                            <MouseButton />
+                        </div>
+                        <div className='text-white text-lg mt-2 font-light text-center'>
+                            Serang dengan proyektil: <span className='font-semibold text-[#ffe066]'>Klik Kiri</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             {/* Sparkle particles */}
@@ -185,5 +194,71 @@ function Key3D({ label, wide = false }: { label: string; wide?: boolean }) {
                 }
             `}</style>
         </span>
+    );
+}
+
+// Mouse Button component with click animation
+function MouseButton() {
+    return (
+        <div className='relative inline-flex items-center justify-center w-16 h-20 mx-1 cursor-pointer mouse-container'>
+            {/* Mouse body */}
+            <div className='relative w-12 h-16 bg-gradient-to-b from-[#23203a] to-[#0d0b1f] rounded-2xl border-2 border-[#bfa14a] shadow-[0_4px_24px_#ffe06644] mouse-body'>
+                {/* Left click button */}
+                <div className='absolute top-1 left-1 w-4 h-6 bg-gradient-to-b from-[#2d254a] to-[#18122b] rounded-tl-xl rounded-tr-sm border-r border-[#bfa14a55] mouse-left-btn'>
+                    <div className='absolute inset-0 bg-[#ffe066] opacity-0 rounded-tl-xl rounded-tr-sm transition-all duration-150 mouse-click-glow' />
+                </div>
+                {/* Right click button */}
+                <div className='absolute top-1 right-1 w-4 h-6 bg-gradient-to-b from-[#1a1732] to-[#0a0817] rounded-tr-xl rounded-tl-sm opacity-60' />
+                {/* Scroll wheel */}
+                <div className='absolute top-7 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-[#bfa14a] rounded-sm opacity-70' />
+                {/* Glow effect */}
+                <div className='absolute inset-0 rounded-2xl pointer-events-none mouse-glow' />
+            </div>
+            <style jsx>{`
+                .mouse-container:hover .mouse-body,
+                .mouse-container:focus .mouse-body {
+                    box-shadow: 0 0 24px #ffe066cc, 0 4px 16px #bfa14a88;
+                    border-color: #ffe066;
+                }
+                .mouse-container:hover .mouse-left-btn,
+                .mouse-container:focus .mouse-left-btn {
+                    background: linear-gradient(180deg, #ffe066 0%, #bfa14a 100%);
+                    box-shadow: 0 0 12px #ffe066aa;
+                }
+                .mouse-container:active .mouse-left-btn {
+                    transform: translateY(1px);
+                    background: linear-gradient(180deg, #ffed99 0%, #d4b851 100%);
+                }
+                .mouse-container:active .mouse-click-glow {
+                    opacity: 0.4;
+                    animation: clickPulse 0.2s ease-out;
+                }
+                .mouse-glow {
+                    background: radial-gradient(circle at 50% 60%, #ffe06644 0%, #0000 80%);
+                    opacity: 0.7;
+                    filter: blur(6px);
+                    transition: opacity 0.2s;
+                }
+                .mouse-container:hover .mouse-glow,
+                .mouse-container:focus .mouse-glow {
+                    opacity: 1;
+                    filter: blur(10px);
+                }
+                @keyframes clickPulse {
+                    0% {
+                        opacity: 0.4;
+                        transform: scale(1);
+                    }
+                    50% {
+                        opacity: 0.8;
+                        transform: scale(1.1);
+                    }
+                    100% {
+                        opacity: 0;
+                        transform: scale(1.2);
+                    }
+                }
+            `}</style>
+        </div>
     );
 }
